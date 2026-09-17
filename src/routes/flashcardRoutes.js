@@ -2,7 +2,7 @@ const express = require("express");
 
 const router = express.Router();
 
-// Listar todos os flashcards do usuário logado
+// Listar todos os flashcards do usuário logado. OBS: PROVAVELMENTE NÃO SERÁ USADO
 router.get("/", (req, res) => {
   res.json([
     {
@@ -27,7 +27,7 @@ router.get("/materia/:materiaId", (req, res) => {
   });
 });
 
-// Buscar um flashcard específico
+// Buscar um flashcard específico. OBS: PROVAVELMENTE NÃO SERÁ USADO
 router.get("/:id", (req, res) => {
   const { id } = req.params;
 

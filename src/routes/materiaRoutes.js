@@ -16,7 +16,7 @@ router.get("/", (req, res) => {
   ]);
 });
 
-// Buscar uma matéria específica
+// Buscar uma matéria específica. OBS: PROVAVELMENTE NÃO SERÁ USADO
 router.get("/:id", (req, res) => {
   const { id } = req.params;
 
