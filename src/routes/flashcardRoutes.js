@@ -1,4 +1,5 @@
 const express = require("express");
+const flashcardController = require("../controllers/flashcard-controller");
 
 const router = express.Router();
 
@@ -18,14 +19,7 @@ router.get("/", (req, res) => {
 });
 
 // Listar flashcards de uma matéria específica
-router.get("/materia/:materiaId", (req, res) => {
-  const { materiaId } = req.params;
-
-  res.json({
-    materiaId,
-    flashcards: [],
-  });
-});
+router.get("/materia/:materiaId", flashcardController.listarFlashcardsMateria);
 
 // Buscar um flashcard específico. OBS: PROVAVELMENTE NÃO SERÁ USADO
 router.get("/:id", (req, res) => {
@@ -43,45 +37,12 @@ router.get("/:id", (req, res) => {
 });
 
 // Criar flashcard
-router.post("/", (req, res) => {
-  const { frente, verso, materiaId } = req.body;
-
-  res.status(201).json({
-    mensagem: "Flashcard criado com sucesso.",
-    flashcard: {
-      frente,
-      verso,
-      acertos: 0,
-      erros: 0,
-      acertosConsecutivos: 0,
-      materiaId,
-    },
-  });
-});
+router.post("/", flashcardController.criar);
 
 // Atualizar flashcard
-router.patch("/:id", (req, res) => {
-  const { id } = req.params;
-
-  const { frente, verso } = req.body;
-
-  res.json({
-    mensagem: "Flashcard atualizado com sucesso.",
-    flashcard: {
-      id,
-      frente,
-      verso,
-    },
-  });
-});
+router.patch("/:id", flashcardController.atualizar);
 
 // Excluir flashcard
-router.delete("/:id", (req, res) => {
-  const { id } = req.params;
-
-  res.json({
-    mensagem: `Flashcard ${id} excluído com sucesso.`,
-  });
-});
+router.delete("/:id", flashcardController.deletar);
 
 module.exports = router;
