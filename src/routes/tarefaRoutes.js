@@ -9,7 +9,7 @@ router.get("/", tarefaController.listarGlobalmente);
 // Listar tarefas de uma matéria específica
 router.get("/materia/:materiaId", tarefaController.listarTarefasMateria);
 
-// Buscar uma tarefa específica
+// Buscar uma tarefa específica. OBS: PROVAVELMENTE NÃO SERÁ USADO
 router.get("/:id", (req, res) => {
   const { id } = req.params;
 
