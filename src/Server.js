@@ -9,11 +9,11 @@ const server = express();
 
 server.use(express.json());
 
-server.use("/usuarios", usuarioRoutes);
-server.use("/materias", materiaRoutes);
-server.use("/tarefas", tarefaRoutes);
-server.use("/flashcards", flashcardRoutes);
-server.use("/auth", authRoutes);
+server.use("/api/usuarios", usuarioRoutes);
+server.use("/api/materias", materiaRoutes);
+server.use("/api/tarefas", tarefaRoutes);
+server.use("/api/flashcards", flashcardRoutes);
+server.use("/api/auth", authRoutes);
 
 const PORT = 3000;
 
