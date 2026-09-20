@@ -5,6 +5,8 @@ import tarefaRoutes from "./routes/tarefaRoutes.js";
 import flashcardRoutes from "./routes/flashcardRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 
+import { erroHandlerMiddleware } from "./middlewares/erro-handler.js";
+
 const server = express();
 
 server.use(express.json());
@@ -18,6 +20,8 @@ server.use("/api/materias", materiaRoutes);
 server.use("/api/tarefas", tarefaRoutes);
 server.use("/api/flashcards", flashcardRoutes);
 server.use("/api/auth", authRoutes);
+
+server.use(erroHandlerMiddleware);
 
 const PORT = 3000;
 

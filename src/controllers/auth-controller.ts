@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { HttpError } from "../errors/HttpError.js";
 
 export default {
   register: (req: Request, res: Response) => {
@@ -9,15 +10,11 @@ export default {
       typeof email !== "string" ||
       typeof senha !== "string"
     ) {
-      return res.status(400).json({
-        mensagem: "Os campos devem ser strings!",
-      });
+      throw new HttpError(400, "Os campos devem ser strings!");
     }
 
     if (!apelido.trim() || !email.trim() || !senha.trim()) {
-      return res.status(400).json({
-        mensagem: "Todos os campos são obrigatórios!",
-      });
+      throw new HttpError(400, "Todos os campos são obrigatórios!");
     }
 
     const emailTratado = email.trim().toLowerCase();
@@ -26,19 +23,15 @@ export default {
       !emailTratado.endsWith("@gmail.com") &&
       !emailTratado.endsWith("@hotmail.com")
     ) {
-      return res.status(400).json({
-        mensagem: "O email deve ser Gmail ou Hotmail.",
-      });
+      throw new HttpError(400, "O email deve ser Gmail ou Hotmail.");
     }
 
     if (senha.length < 6) {
-      return res.status(400).json({
-        mensagem: "A senha deve ter no mínimo 6 caracteres.",
-      });
+      throw new HttpError(400, "A senha deve ter no mínimo 6 caracteres.");
     }
 
     return res.status(201).json({
-      mensagem: `Usuário ${apelido} criado com sucesso!`,
+      mensagem: `Usuário ${apelido.trim()} criado com sucesso!`,
     });
   },
 
@@ -46,15 +39,11 @@ export default {
     const { email, senha } = req.body;
 
     if (typeof email !== "string" || typeof senha !== "string") {
-      return res
-        .status(400)
-        .json({ mensagem: "Email e senha devem ser tipo string." });
+      throw new HttpError(400, "Email e senha devem ser do tipo string.");
     }
 
     if (!email.trim() || !senha.trim()) {
-      return res
-        .status(400)
-        .json({ mensagem: "Email e senha são obrigatórios." });
+      throw new HttpError(400, "Email e senha são obrigatórios.");
     }
 
     const emailTratado = email.trim().toLowerCase();
@@ -63,18 +52,16 @@ export default {
       !emailTratado.endsWith("@gmail.com") &&
       !emailTratado.endsWith("@hotmail.com")
     ) {
-      return res.status(400).json({
-        mensagem: "O email deve ser Gmail ou Hotmail.",
-      });
+      throw new HttpError(400, "O email deve ser Gmail ou Hotmail.");
     }
 
     if (senha.length < 6) {
-      return res.status(400).json({
-        mensagem: "A senha deve ter no mínimo 6 caracteres.",
-      });
+      throw new HttpError(400, "A senha deve ter no mínimo 6 caracteres.");
     }
 
-    return res.status(200).json({ mensagem: "Login válido!" });
+    return res.status(200).json({
+      mensagem: "Login válido!",
+    });
   },
 
   logout: (req: Request, res: Response) => {

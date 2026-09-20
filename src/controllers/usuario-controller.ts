@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { HttpError } from "../errors/HttpError.js";
 
 export default {
   buscarDados: (req: Request, res: Response) => {
@@ -20,36 +21,26 @@ export default {
     const { apelido, fotoPerfil } = req.body;
 
     if (apelido === undefined && fotoPerfil === undefined) {
-      return res.status(400).json({
-        mensagem: "Nenhum campo foi enviado para atualização.",
-      });
+      throw new HttpError(400, "Nenhum campo foi enviado para atualização.");
     }
 
     if (apelido !== undefined) {
       if (typeof apelido !== "string") {
-        return res.status(400).json({
-          mensagem: "O apelido deve ser do tipo string.",
-        });
+        throw new HttpError(400, "O apelido deve ser do tipo string.");
       }
 
       if (!apelido.trim()) {
-        return res.status(400).json({
-          mensagem: "O apelido não pode estar vazio.",
-        });
+        throw new HttpError(400, "O apelido não pode estar vazio.");
       }
 
       if (apelido.trim().length > 30) {
-        return res.status(400).json({
-          mensagem: "O apelido deve ter no máximo 30 caracteres.",
-        });
+        throw new HttpError(400, "O apelido deve ter no máximo 30 caracteres.");
       }
     }
 
     if (fotoPerfil !== undefined) {
       if (typeof fotoPerfil !== "string" && fotoPerfil !== null) {
-        return res.status(400).json({
-          mensagem: "A foto de perfil é inválida.",
-        });
+        throw new HttpError(400, "A foto de perfil é inválida.");
       }
     }
 
