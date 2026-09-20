@@ -1,5 +1,5 @@
-const express = require("express");
-const tarefaController = require("../controllers/tarefa-controller");
+import express from "express";
+import tarefaController from "../controllers/tarefa-controller.js";
 
 const router = express.Router();
 
@@ -33,4 +33,4 @@ router.patch("/:id", tarefaController.atualizar);
 // Excluir uma tarefa
 router.delete("/:id", tarefaController.deletar);
 
-module.exports = router;
+export default router;

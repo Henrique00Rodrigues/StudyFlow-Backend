@@ -1,8 +1,10 @@
-module.exports = {
-  listar: (req, res) => {
+import type { Request, Response } from "express";
+
+export default {
+  listar: (req: Request, res: Response) => {
     return res.status(200).json({ materias: [] });
   },
-  criarMateria: (req, res) => {
+  criarMateria: (req: Request, res: Response) => {
     const { nome } = req.body;
 
     if (typeof nome !== "string") {
@@ -28,7 +30,7 @@ module.exports = {
       .json({ mensagem: `Matéria de ${nomeTratado} criada com sucesso.` });
   },
 
-  atualizarMateria: (req, res) => {
+  atualizarMateria: (req: Request, res: Response) => {
     const { id } = req.params;
     const { nome } = req.body;
 
@@ -59,7 +61,7 @@ module.exports = {
     });
   },
 
-  deletar: (req, res) => {
+  deletar: (req: Request, res: Response) => {
     const { id } = req.params;
 
     return res.sendStatus(204);

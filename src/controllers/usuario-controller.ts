@@ -1,5 +1,7 @@
-module.exports = {
-  buscarDados: (req, res) => {
+import type { Request, Response } from "express";
+
+export default {
+  buscarDados: (req: Request, res: Response) => {
     const usuario = {
       id: 1,
       apelido: "Henrique",
@@ -14,7 +16,7 @@ module.exports = {
     });
   },
 
-  atualizar: (req, res) => {
+  atualizar: (req: Request, res: Response) => {
     const { apelido, fotoPerfil } = req.body;
 
     if (apelido === undefined && fotoPerfil === undefined) {
@@ -64,7 +66,7 @@ module.exports = {
     });
   },
 
-  deletar: (req, res) => {
+  deletar: (req: Request, res: Response) => {
     return res.sendStatus(204);
   },
 };

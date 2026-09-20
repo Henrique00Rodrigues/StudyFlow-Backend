@@ -1,5 +1,5 @@
-const express = require("express");
-const materiaController = require("../controllers/materia-controller");
+import express from "express";
+import materiaController from "../controllers/materia-controller.js";
 
 const router = express.Router();
 
@@ -25,4 +25,4 @@ router.patch("/:id", materiaController.atualizarMateria);
 // Excluir uma matéria
 router.delete("/:id", materiaController.deletar);
 
-module.exports = router;
+export default router;

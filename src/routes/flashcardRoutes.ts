@@ -1,5 +1,5 @@
-const express = require("express");
-const flashcardController = require("../controllers/flashcard-controller");
+import express from "express";
+import flashcardController from "../controllers/flashcard-controller.js";
 
 const router = express.Router();
 
@@ -45,4 +45,4 @@ router.patch("/:id", flashcardController.atualizar);
 // Excluir flashcard
 router.delete("/:id", flashcardController.deletar);
 
-module.exports = router;
+export default router;

@@ -1,5 +1,7 @@
-module.exports = {
-  register: (req, res) => {
+import type { Request, Response } from "express";
+
+export default {
+  register: (req: Request, res: Response) => {
     const { apelido, email, senha } = req.body;
 
     if (
@@ -40,7 +42,7 @@ module.exports = {
     });
   },
 
-  login: (req, res) => {
+  login: (req: Request, res: Response) => {
     const { email, senha } = req.body;
 
     if (typeof email !== "string" || typeof senha !== "string") {
@@ -75,7 +77,7 @@ module.exports = {
     return res.status(200).json({ mensagem: "Login válido!" });
   },
 
-  logout: (req, res) => {
+  logout: (req: Request, res: Response) => {
     return res
       .status(200)
       .json({ mensagem: `Você foi deslogado com sucesso!` });

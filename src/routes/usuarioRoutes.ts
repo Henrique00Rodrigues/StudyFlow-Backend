@@ -1,5 +1,5 @@
-const express = require("express");
-const usuarioController = require("../controllers/usuario-controller");
+import express from "express";
+import usuarioController from "../controllers/usuario-controller.js";
 
 const router = express.Router();
 
@@ -12,4 +12,4 @@ router.patch("/me", usuarioController.atualizar);
 // Excluir conta
 router.delete("/me", usuarioController.deletar);
 
-module.exports = router;
+export default router;

@@ -1,9 +1,14 @@
-module.exports = {
-  listarGlobalmente: (req, res) => {
+import type { Request, Response } from "express";
+
+export default {
+  listarGlobalmente: (req: Request, res: Response) => {
     return res.status(200).json({ tarefas: [] });
   },
 
-  listarTarefasMateria: (req, res) => {
+  listarTarefasMateria: (
+    req: Request<{ materiaId: string }>,
+    res: Response,
+  ) => {
     const { materiaId } = req.params;
 
     return res
@@ -11,7 +16,7 @@ module.exports = {
       .json({ materiaId: `${materiaId}`, materia: ``, tarefas: [] });
   },
 
-  criar: (req, res) => {
+  criar: (req: Request, res: Response) => {
     const { titulo, descricao, prioridade, dataEntrega, materiaId } = req.body;
 
     if (
@@ -67,6 +72,13 @@ module.exports = {
     }
 
     const [ano, mes, dia] = dataEntregaTratada.split("-").map((n) => +n);
+
+    if (ano === undefined || mes === undefined || dia === undefined) {
+      return res.status(400).json({
+        mensagem: "A data de entrega é inválida.",
+      });
+    }
+
     const data = new Date(ano, mes - 1, dia); //Os meses no JS funcionam como um array ["janeiro", "fevereiro", "março", ...], por conta disso pegamos o índice dele com - 1. Exemplo, "janeiro" = índice 0.
 
     if (
@@ -92,7 +104,7 @@ module.exports = {
     });
   },
 
-  atualizar: (req, res) => {
+  atualizar: (req: Request<{ id: string }>, res: Response) => {
     const id = +req.params.id;
     const { titulo, descricao, prioridade, concluida, dataEntrega } = req.body;
 
@@ -150,6 +162,13 @@ module.exports = {
     }
 
     const [ano, mes, dia] = dataEntregaTratada.split("-").map((n) => +n);
+
+    if (ano === undefined || mes === undefined || dia === undefined) {
+      return res.status(400).json({
+        mensagem: "A data de entrega é inválida.",
+      });
+    }
+
     const data = new Date(ano, mes - 1, dia); //Os meses no JS funcionam como um array ["janeiro", "fevereiro", "março", ...], por conta disso pegamos o índice dele com - 1. Exemplo, "janeiro" = índice 0.
 
     if (
@@ -175,7 +194,7 @@ module.exports = {
     });
   },
 
-  deletar: (req, res) => {
+  deletar: (req: Request<{ id: string }>, res: Response) => {
     // Quando você tiver banco, o fluxo provavelmente será:
     // receber id
     // ↓

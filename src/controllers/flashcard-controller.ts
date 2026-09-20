@@ -1,7 +1,10 @@
-const { atualizar } = require("./tarefa-controller");
+import type { Request, Response } from "express";
 
-module.exports = {
-  listarFlashcardsMateria: (req, res) => {
+export default {
+  listarFlashcardsMateria: (
+    req: Request<{ materiaId: string }>,
+    res: Response,
+  ) => {
     const materiaId = +req.params.materiaId;
 
     if (!Number.isInteger(materiaId) || materiaId <= 0) {
@@ -13,7 +16,7 @@ module.exports = {
     return res.status(200).json({ materiaId, materia: ``, flashcards: [] });
   },
 
-  criar: (req, res) => {
+  criar: (req: Request, res: Response) => {
     const { frente, verso, materiaId } = req.body;
 
     if (typeof frente !== "string" || typeof verso !== "string") {
@@ -45,7 +48,7 @@ module.exports = {
     });
   },
 
-  atualizar: (req, res) => {
+  atualizar: (req: Request<{ id: string }>, res: Response) => {
     const id = +req.params.id;
     const { frente, verso } = req.body;
 
@@ -73,7 +76,7 @@ module.exports = {
     });
   },
 
-  deletar: (req, res) => {
+  deletar: (req: Request<{ id: string }>, res: Response) => {
     const id = +req.params.id;
 
     if (!Number.isInteger(id) || id <= 0) {
