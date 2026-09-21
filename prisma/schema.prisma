@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum TipoUsuario {
+  comum
+  administrador
+}
+
+enum Prioridade {
+  baixa
+  media
+  alta
+}
+
+model Usuario {
+  id  Int @id @default(autoincrement())
+  apelido String @db.VarChar(30)
+  email String @unique @db.VarChar(255)
+  senha String @db.VarChar(255)
+  tipo  TipoUsuario @default(comum)
+  dataCriacao DateTime @default(now())
+  fotoPerfilUrl String? @db.Text
+
+  materias  Materia[]
+}
+
+model Materia {
+  id  Int @id @default(autoincrement())
+  nome  String @db.VarChar(20)
+  usuarioId Int
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  tarefas Tarefa[]
+  flashcards  Flashcard[]
+}
+
+model Tarefa {
+  id           Int         @id @default(autoincrement())
+  titulo       String
+  descricao    String
+  prioridade   Prioridade
+  concluida    Boolean     @default(false)
+  dataCriacao  DateTime    @default(now())
+  dataEntrega  DateTime    @db.Date
+
+  materiaId    Int
+
+  materia      Materia     @relation(fields: [materiaId], references: [id],onDelete: Cascade)
+}
+
+model Flashcard {
+  id                   Int       @id @default(autoincrement())
+  frente               String
+  verso                String
+
+  acertos              Int       @default(0)
+  erros                Int       @default(0)
+  acertosConsecutivos  Int       @default(0)
+
+  dataCriacao          DateTime  @default(now())
+  dataUltimaRevisao    DateTime?
+  proximaRevisao       DateTime?
+
+  materiaId            Int
+
+  materia              Materia   @relation(fields: [materiaId], references: [id], onDelete: Cascade)
+}
