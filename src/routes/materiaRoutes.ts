@@ -1,5 +1,8 @@
 import express from "express";
 import materiaController from "../controllers/materia-controller.js";
+import { validarCriacaoMateria } from "../middlewares/materia-middlewares/validar-criacao-materia.js";
+import { validarIdMateria } from "../middlewares/materia-middlewares/validar-id-materia.js";
+import { validarAtualizacaoMateria } from "../middlewares/materia-middlewares/validar-atualizacao-materia.js";
 
 const router = express.Router();
 
@@ -17,12 +20,17 @@ router.get("/:id", (req, res) => {
 });
 
 // Criar uma nova matéria
-router.post("/", materiaController.criarMateria);
+router.post("/", validarCriacaoMateria, materiaController.criarMateria);
 
 // Atualizar uma matéria
-router.patch("/:id", materiaController.atualizarMateria);
+router.patch(
+  "/:id",
+  validarIdMateria,
+  validarAtualizacaoMateria,
+  materiaController.atualizarMateria,
+);
 
 // Excluir uma matéria
-router.delete("/:id", materiaController.deletar);
+router.delete("/:id", validarIdMateria, materiaController.deletar);
 
 export default router;
