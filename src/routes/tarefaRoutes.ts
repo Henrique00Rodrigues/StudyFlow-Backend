@@ -1,5 +1,9 @@
 import express from "express";
 import tarefaController from "../controllers/tarefa-controller.js";
+import { validarIdMateriaTarefa } from "../middlewares/tarefas-middlewares/validar-id-materia-tarefa.js";
+import { validarCriacaoTarefa } from "../middlewares/tarefas-middlewares/validar-criacao-tarefa.js";
+import { validarIdTarefa } from "../middlewares/tarefas-middlewares/validar-id-tarefa.js";
+import { validarAtualizacaoTarefa } from "../middlewares/tarefas-middlewares/validar-atualizacao-tarefa.js";
 
 const router = express.Router();
 
@@ -7,7 +11,11 @@ const router = express.Router();
 router.get("/", tarefaController.listarGlobalmente);
 
 // Listar tarefas de uma matéria específica
-router.get("/materia/:materiaId", tarefaController.listarTarefasMateria);
+router.get(
+  "/materia/:materiaId",
+  validarIdMateriaTarefa,
+  tarefaController.listarTarefasMateria,
+);
 
 // Buscar uma tarefa específica. OBS: PROVAVELMENTE NÃO SERÁ USADO
 router.get("/:id", (req, res) => {
@@ -25,12 +33,17 @@ router.get("/:id", (req, res) => {
 });
 
 // Criar uma tarefa
-router.post("/", tarefaController.criar);
+router.post("/", validarCriacaoTarefa, tarefaController.criar);
 
 // Atualizar uma tarefa
-router.patch("/:id", tarefaController.atualizar);
+router.patch(
+  "/:id",
+  validarIdTarefa,
+  validarAtualizacaoTarefa,
+  tarefaController.atualizar,
+);
 
 // Excluir uma tarefa
-router.delete("/:id", tarefaController.deletar);
+router.delete("/:id", validarIdTarefa, tarefaController.deletar);
 
 export default router;
