@@ -6,11 +6,11 @@ export default {
     req: Request<{ materiaId: string }>,
     res: Response,
   ) => {
-    const materiaId = Number(req.params.materiaId);
-
-    if (!Number.isInteger(materiaId) || materiaId <= 0) {
-      throw new HttpError(400, "O ID da matéria é inválido.");
+    if (!req.user) {
+      throw new HttpError(401, "Usuário não autenticado.");
     }
+
+    const materiaId = +req.params.materiaId;
 
     return res.status(200).json({
       materiaId,
@@ -20,25 +20,17 @@ export default {
   },
 
   criar: (req: Request, res: Response) => {
+    if (!req.user) {
+      throw new HttpError(401, "Usuário não autenticado.");
+    }
+
     const { frente, verso, materiaId } = req.body;
-
-    if (typeof frente !== "string" || typeof verso !== "string") {
-      throw new HttpError(400, "Tipo dos campos inválido.");
-    }
-
-    if (!frente.trim() || !verso.trim()) {
-      throw new HttpError(400, "Frente e verso são obrigatórios.");
-    }
-
-    if (!Number.isInteger(materiaId) || materiaId <= 0) {
-      throw new HttpError(400, "O ID da matéria é inválido.");
-    }
 
     return res.status(201).json({
       mensagem: "Flashcard criado com sucesso.",
       flashcard: {
-        frente: frente.trim(),
-        verso: verso.trim(),
+        frente,
+        verso,
         acertos: 0,
         erros: 0,
         acertosConsecutivos: 0,
@@ -48,36 +40,26 @@ export default {
   },
 
   atualizar: (req: Request<{ id: string }>, res: Response) => {
+    if (!req.user) {
+      throw new HttpError(401, "Usuário não autenticado.");
+    }
+
     const id = +req.params.id;
     const { frente, verso } = req.body;
-
-    if (!Number.isInteger(id) || id <= 0) {
-      throw new HttpError(400, "O ID do flashcard é inválido.");
-    }
-
-    if (typeof frente !== "string" || typeof verso !== "string") {
-      throw new HttpError(400, "Frente e verso devem ser strings.");
-    }
-
-    if (!frente.trim() || !verso.trim()) {
-      throw new HttpError(400, "Frente e verso são obrigatórios.");
-    }
 
     return res.status(200).json({
       mensagem: "Flashcard atualizado com sucesso.",
       flashcard: {
         id,
-        frente: frente.trim(),
-        verso: verso.trim(),
+        frente,
+        verso,
       },
     });
   },
 
   deletar: (req: Request<{ id: string }>, res: Response) => {
-    const id = +req.params.id;
-
-    if (!Number.isInteger(id) || id <= 0) {
-      throw new HttpError(400, "O ID do flashcard é inválido.");
+    if (!req.user) {
+      throw new HttpError(401, "Usuário não autenticado.");
     }
 
     return res.sendStatus(204);
