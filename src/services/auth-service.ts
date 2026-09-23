@@ -2,6 +2,7 @@ import * as argon2 from "argon2";
 
 import { prisma } from "../database/index.js";
 import { HttpError } from "../errors/HttpError.js";
+import { gerarToken } from "../utils/jwt.js";
 
 type RegisterData = {
   apelido: string;
@@ -67,8 +68,13 @@ export default {
       throw new HttpError(401, "Email ou senha incorretos.");
     }
 
+    const token = gerarToken(usuario.id);
+
     const { senha: _senha, ...usuarioSeguro } = usuario;
 
-    return usuarioSeguro;
+    return {
+      usuario: usuarioSeguro,
+      token,
+    };
   },
 };

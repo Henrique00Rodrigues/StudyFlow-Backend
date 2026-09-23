@@ -17,7 +17,7 @@ export default {
       },
 
       orderBy: {
-        nome: "asc",
+        id: "asc",
       },
     });
 

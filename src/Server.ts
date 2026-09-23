@@ -6,6 +6,7 @@ import flashcardRoutes from "./routes/flashcardRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 
 import { erroHandlerMiddleware } from "./middlewares/erro-handler.js";
+import { autenticarUsuario } from "./middlewares/auth-middlewares/autenticar-usuario.js";
 
 const server = express();
 
@@ -15,10 +16,10 @@ server.get("/api/", (req, res) => {
   res.json({ mensagem: "Hey" });
 });
 
-server.use("/api/usuarios", usuarioRoutes);
-server.use("/api/materias", materiaRoutes);
-server.use("/api/tarefas", tarefaRoutes);
-server.use("/api/flashcards", flashcardRoutes);
+server.use("/api/usuarios", autenticarUsuario, usuarioRoutes);
+server.use("/api/materias", autenticarUsuario, materiaRoutes);
+server.use("/api/tarefas", autenticarUsuario, tarefaRoutes);
+server.use("/api/flashcards", autenticarUsuario, flashcardRoutes);
 server.use("/api/auth", authRoutes);
 
 server.use(erroHandlerMiddleware);

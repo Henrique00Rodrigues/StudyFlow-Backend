@@ -20,10 +20,12 @@ export default {
   login: async (req: Request, res: Response) => {
     const { email, senha } = req.body;
 
-    const usuario = await authService.login({ email, senha });
+    const resultado = await authService.login({ email, senha });
 
     return res.status(200).json({
-      mensagem: "Login válido!",
+      mensagem: "Login realizado com sucesso!",
+      usuario: resultado.usuario,
+      token: resultado.token,
     });
   },
 
