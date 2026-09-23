@@ -17,21 +17,6 @@ router.get(
   tarefaController.listarTarefasMateria,
 );
 
-// Buscar uma tarefa específica. OBS: PROVAVELMENTE NÃO SERÁ USADO
-router.get("/:id", (req, res) => {
-  const { id } = req.params;
-
-  res.json({
-    id,
-    titulo: "Estudar SQL",
-    descricao: "Revisar JOIN e subqueries",
-    prioridade: "alta",
-    concluida: false,
-    dataEntrega: "20/09/2026",
-    materiaId: 1,
-  });
-});
-
 // Criar uma tarefa
 router.post("/", validarCriacaoTarefa, tarefaController.criar);
 
