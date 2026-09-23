@@ -1,8 +1,9 @@
 import type { Request, Response } from "express";
 import { HttpError } from "../errors/HttpError.js";
+import flashcardService from "../services/flashcard-service.js";
 
 export default {
-  listarFlashcardsMateria: (
+  listarFlashcardsMateria: async (
     req: Request<{ materiaId: string }>,
     res: Response,
   ) => {
@@ -10,57 +11,69 @@ export default {
       throw new HttpError(401, "Usuário não autenticado.");
     }
 
+    const usuarioId = req.user.id;
     const materiaId = +req.params.materiaId;
 
-    return res.status(200).json({
+    const resultado = await flashcardService.listarFlashcardsMateria(
+      usuarioId,
       materiaId,
-      materia: "",
-      flashcards: [],
+    );
+
+    return res.status(200).json({
+      materia: resultado.materia,
+      flashcards: resultado.flashcards,
     });
   },
 
-  criar: (req: Request, res: Response) => {
+  criar: async (req: Request, res: Response) => {
     if (!req.user) {
       throw new HttpError(401, "Usuário não autenticado.");
     }
 
+    const usuarioId = req.user.id;
     const { frente, verso, materiaId } = req.body;
+
+    const flashcard = await flashcardService.criar(usuarioId, {
+      frente,
+      verso,
+      materiaId,
+    });
 
     return res.status(201).json({
       mensagem: "Flashcard criado com sucesso.",
-      flashcard: {
-        frente,
-        verso,
-        acertos: 0,
-        erros: 0,
-        acertosConsecutivos: 0,
-        materiaId,
-      },
+      flashcard,
     });
   },
 
-  atualizar: (req: Request<{ id: string }>, res: Response) => {
+  atualizar: async (req: Request<{ id: string }>, res: Response) => {
     if (!req.user) {
       throw new HttpError(401, "Usuário não autenticado.");
     }
 
-    const id = +req.params.id;
+    const usuarioId = req.user.id;
+    const flashcardId = +req.params.id;
     const { frente, verso } = req.body;
+
+    const flashcard = await flashcardService.atualizar(usuarioId, flashcardId, {
+      frente,
+      verso,
+    });
 
     return res.status(200).json({
       mensagem: "Flashcard atualizado com sucesso.",
-      flashcard: {
-        id,
-        frente,
-        verso,
-      },
+      flashcard,
     });
   },
 
-  deletar: (req: Request<{ id: string }>, res: Response) => {
+  deletar: async (req: Request<{ id: string }>, res: Response) => {
     if (!req.user) {
       throw new HttpError(401, "Usuário não autenticado.");
     }
+
+    const usuarioId = req.user.id;
+    const flashcardId = +req.params.id;
+
+    await flashcardService.deletar(usuarioId, flashcardId);
 
     return res.sendStatus(204);
   },
