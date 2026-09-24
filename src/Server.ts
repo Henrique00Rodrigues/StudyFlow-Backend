@@ -5,10 +5,22 @@ import tarefaRoutes from "./routes/tarefaRoutes.js";
 import flashcardRoutes from "./routes/flashcardRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 
+import cors from "cors";
+import cookieParser from "cookie-parser";
+
 import { erroHandlerMiddleware } from "./middlewares/erro-handler.js";
 import { autenticarUsuario } from "./middlewares/auth-middlewares/autenticar-usuario.js";
 
 const server = express();
+
+server.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
+
+server.use(cookieParser());
 
 server.use(express.json());
 

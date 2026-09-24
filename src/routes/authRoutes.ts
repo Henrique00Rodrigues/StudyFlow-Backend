@@ -1,4 +1,5 @@
 import express from "express";
+
 import authController from "../controllers/auth-controller.js";
 import { validarRegister } from "../middlewares/auth-middlewares/validar-register.js";
 import { validarLogin } from "../middlewares/auth-middlewares/validar-login.js";

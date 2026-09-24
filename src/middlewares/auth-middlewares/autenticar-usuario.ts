@@ -2,22 +2,17 @@ import type { Request, Response, NextFunction } from "express";
 
 import { HttpError } from "../../errors/HttpError.js";
 import { verificarToken } from "../../utils/jwt.js";
+import { AUTH_COOKIE_NAME } from "../../config/auth-cookie.js";
 
 export function autenticarUsuario(
   req: Request,
   _res: Response,
   next: NextFunction,
 ) {
-  const authorization = req.headers.authorization;
+  const token = req.cookies[AUTH_COOKIE_NAME];
 
-  if (!authorization) {
-    throw new HttpError(401, "Token de autenticação não enviado.");
-  }
-
-  const [tipo, token] = authorization.split(" ");
-
-  if (tipo !== "Bearer" || !token) {
-    throw new HttpError(401, "Token de autenticação inválido.");
+  if (!token || typeof token !== "string") {
+    throw new HttpError(401, "Usuário não autenticado.");
   }
 
   try {
