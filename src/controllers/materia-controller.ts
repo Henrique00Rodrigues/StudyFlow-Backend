@@ -18,6 +18,21 @@ export default {
     });
   },
 
+  buscarPorId: async (req: Request<{ id: string }>, res: Response) => {
+    if (!req.user) {
+      throw new HttpError(401, "Usuário não autenticado.");
+    }
+
+    const usuarioId = req.user.id;
+    const materiaId = +req.params.id;
+
+    const materia = await materiaService.buscarPorId(usuarioId, materiaId);
+
+    return res.status(200).json({
+      materia,
+    });
+  },
+
   criarMateria: async (req: Request, res: Response) => {
     if (!req.user) {
       throw new HttpError(401, "Usuário não autenticado.");

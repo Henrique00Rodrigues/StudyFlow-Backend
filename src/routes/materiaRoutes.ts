@@ -9,6 +9,9 @@ const router = express.Router();
 // Listar todas as matérias do usuário logado
 router.get("/", materiaController.listar);
 
+// Buscar matéria por id
+router.get("/:id", validarIdMateria, materiaController.buscarPorId);
+
 // Criar uma nova matéria
 router.post("/", validarCriacaoMateria, materiaController.criarMateria);
 

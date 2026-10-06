@@ -24,6 +24,21 @@ export default {
     return materias;
   },
 
+  buscarPorId: async (usuarioId: number, materiaId: number) => {
+    const materia = await prisma.materia.findFirst({
+      where: {
+        id: materiaId,
+        usuarioId,
+      },
+    });
+
+    if (!materia) {
+      throw new HttpError(404, "Matéria não encontrada.");
+    }
+
+    return materia;
+  },
+
   criar: async (usuarioId: number, { nome }: CriarMateriaData) => {
     const materiaExistente = await prisma.materia.findFirst({
       where: {
