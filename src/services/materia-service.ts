@@ -51,6 +51,36 @@ export default {
       throw new HttpError(409, "Você já possui uma matéria com esse nome.");
     }
 
+    // Busca o tipo do usuário para saber se os limites
+    // de criação devem ser aplicados.
+    const usuario = await prisma.usuario.findUnique({
+      where: {
+        id: usuarioId,
+      },
+
+      select: {
+        tipo: true,
+      },
+    });
+
+    if (!usuario) {
+      throw new HttpError(404, "Usuário não encontrado.");
+    }
+
+    // Usuários comuns podem possuir no máximo 5 matérias.
+    // Administradores não possuem limite.
+    if (usuario.tipo === "comum") {
+      const quantidadeMaterias = await prisma.materia.count({
+        where: {
+          usuarioId,
+        },
+      });
+
+      if (quantidadeMaterias >= 5) {
+        throw new HttpError(403, "Você atingiu o limite máximo de 5 matérias.");
+      }
+    }
+
     const materia = await prisma.materia.create({
       data: {
         nome,

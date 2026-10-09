@@ -84,10 +84,35 @@ export default {
         id: materiaId,
         usuarioId,
       },
+
+      include: {
+        usuario: {
+          select: {
+            tipo: true,
+          },
+        },
+      },
     });
 
     if (!materia) {
       throw new HttpError(404, "Matéria não encontrada.");
+    }
+
+    // Usuários comuns podem possuir no máximo 10 tarefas por matéria.
+    // Administradores não possuem limite.
+    if (materia.usuario.tipo === "comum") {
+      const quantidadeTarefas = await prisma.tarefa.count({
+        where: {
+          materiaId,
+        },
+      });
+
+      if (quantidadeTarefas >= 10) {
+        throw new HttpError(
+          403,
+          "Você atingiu o limite máximo de 10 tarefas nesta matéria.",
+        );
+      }
     }
 
     const tarefa = await prisma.tarefa.create({

@@ -73,10 +73,35 @@ export default {
         id: materiaId,
         usuarioId,
       },
+
+      include: {
+        usuario: {
+          select: {
+            tipo: true,
+          },
+        },
+      },
     });
 
     if (!materia) {
       throw new HttpError(404, "Matéria não encontrada.");
+    }
+
+    // Usuários comuns podem possuir no máximo 20 flashcards por matéria.
+    // Administradores não possuem limite.
+    if (materia.usuario.tipo === "comum") {
+      const quantidadeFlashcards = await prisma.flashcard.count({
+        where: {
+          materiaId,
+        },
+      });
+
+      if (quantidadeFlashcards >= 20) {
+        throw new HttpError(
+          403,
+          "Você atingiu o limite máximo de 20 flashcards nesta matéria.",
+        );
+      }
     }
 
     const flashcard = await prisma.flashcard.create({
