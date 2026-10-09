@@ -6,6 +6,8 @@ import { validarIdFlashcard } from "../middlewares/flahscard-middlewares/validar
 import { validarAtualizacaoFlashcard } from "../middlewares/flahscard-middlewares/validar-atualizacao-flashcard.js";
 
 const router = express.Router();
+// Listar todos os flashcards do usuário logado
+router.get("/", flashcardController.listarGlobalmente);
 
 // Listar flashcards de uma matéria específica
 router.get(

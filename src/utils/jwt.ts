@@ -20,7 +20,7 @@ export function gerarToken(usuarioId: number) {
     JWT_SECRET,
     {
       algorithm: "HS256",
-      expiresIn: "15m",
+      expiresIn: "1h",
     },
   );
 }

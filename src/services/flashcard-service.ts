@@ -13,6 +13,29 @@ type AtualizarFlashcardData = {
 };
 
 export default {
+  listarGlobalmente: async (usuarioId: number) => {
+    const flashcards = await prisma.flashcard.findMany({
+      where: {
+        materia: {
+          is: {
+            usuarioId,
+          },
+        },
+      },
+
+      include: {
+        materia: {
+          select: {
+            id: true,
+            nome: true,
+          },
+        },
+      },
+    });
+
+    return flashcards;
+  },
+
   listarFlashcardsMateria: async (usuarioId: number, materiaId: number) => {
     const materia = await prisma.materia.findFirst({
       where: {

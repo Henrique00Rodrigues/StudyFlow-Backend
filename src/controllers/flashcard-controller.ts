@@ -3,6 +3,20 @@ import { HttpError } from "../errors/HttpError.js";
 import flashcardService from "../services/flashcard-service.js";
 
 export default {
+  listarGlobalmente: async (req: Request, res: Response) => {
+    if (!req.user) {
+      throw new HttpError(401, "Usuário não autenticado.");
+    }
+
+    const usuarioId = req.user.id;
+
+    const flashcards = await flashcardService.listarGlobalmente(usuarioId);
+
+    return res.status(200).json({
+      flashcards,
+    });
+  },
+
   listarFlashcardsMateria: async (
     req: Request<{ materiaId: string }>,
     res: Response,
