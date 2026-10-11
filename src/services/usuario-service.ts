@@ -80,6 +80,13 @@ export default {
       throw new HttpError(404, "Usuário não encontrado.");
     }
 
+    if (usuarioExistente.tipo === "administrador") {
+      throw new HttpError(
+        403,
+        "O administrador não pode excluir a própria conta.",
+      );
+    }
+
     await prisma.usuario.delete({
       where: {
         id: usuarioId,
