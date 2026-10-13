@@ -24,10 +24,6 @@ server.use(cookieParser());
 
 server.use(express.json());
 
-server.get("/api/", (req, res) => {
-  res.json({ mensagem: "Hey" });
-});
-
 server.use("/api/usuarios", autenticarUsuario, usuarioRoutes);
 server.use("/api/materias", autenticarUsuario, materiaRoutes);
 server.use("/api/tarefas", autenticarUsuario, tarefaRoutes);
