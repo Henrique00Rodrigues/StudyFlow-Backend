@@ -4,6 +4,7 @@ import { validarIdMateriaFlashcard } from "../middlewares/flahscard-middlewares/
 import { validarCriacaoFlashcard } from "../middlewares/flahscard-middlewares/validar-criacao-flashcard.js";
 import { validarIdFlashcard } from "../middlewares/flahscard-middlewares/validar-id-flashcard.js";
 import { validarAtualizacaoFlashcard } from "../middlewares/flahscard-middlewares/validar-atualizacao-flashcard.js";
+import { validarRevisaoFlashcard } from "../middlewares/flahscard-middlewares/validar-revisao-flashcard.js";
 
 const router = express.Router();
 // Listar todos os flashcards do usuário logado
@@ -18,6 +19,14 @@ router.get(
 
 // Criar flashcard
 router.post("/", validarCriacaoFlashcard, flashcardController.criar);
+
+// Revisar flashcard
+router.patch(
+  "/:id/revisar",
+  validarIdFlashcard,
+  validarRevisaoFlashcard,
+  flashcardController.revisar,
+);
 
 // Atualizar flashcard
 router.patch(

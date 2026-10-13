@@ -12,6 +12,35 @@ type AtualizarFlashcardData = {
   verso: string;
 };
 
+type ResultadoRevisao = "acerto" | "erro";
+
+function calcularProximaRevisao(acertosConsecutivos: number) {
+  let segundos;
+
+  switch (acertosConsecutivos) {
+    case 1:
+      segundos = 10;
+      break;
+
+    case 2:
+      segundos = 30;
+      break;
+
+    case 3:
+      segundos = 60;
+      break;
+
+    case 4:
+      segundos = 120;
+      break;
+
+    default:
+      segundos = 300;
+  }
+
+  return new Date(Date.now() + segundos * 1000);
+}
+
 export default {
   listarGlobalmente: async (usuarioId: number) => {
     const flashcards = await prisma.flashcard.findMany({
@@ -172,5 +201,73 @@ export default {
         id: flashcardId,
       },
     });
+  },
+
+  revisar: async (
+    usuarioId: number,
+    flashcardId: number,
+    resultado: ResultadoRevisao,
+  ) => {
+    const flashcard = await prisma.flashcard.findFirst({
+      where: {
+        id: flashcardId,
+
+        materia: {
+          is: {
+            usuarioId,
+          },
+        },
+      },
+    });
+
+    if (!flashcard) {
+      throw new HttpError(404, "Flashcard não encontrado.");
+    }
+
+    const agora = new Date();
+
+    if (resultado === "erro") {
+      const flashcardAtualizado = await prisma.flashcard.update({
+        where: {
+          id: flashcardId,
+        },
+
+        data: {
+          erros: {
+            increment: 1,
+          },
+
+          acertosConsecutivos: 0,
+
+          dataUltimaRevisao: agora,
+
+          proximaRevisao: agora,
+        },
+      });
+
+      return flashcardAtualizado;
+    }
+
+    const novosAcertosConsecutivos = flashcard.acertosConsecutivos + 1;
+
+    const flashcardAtualizado = await prisma.flashcard.update({
+      where: {
+        id: flashcardId,
+      },
+
+      data: {
+        acertos: {
+          increment: 1,
+        },
+
+        acertosConsecutivos: novosAcertosConsecutivos,
+
+        dataUltimaRevisao: agora,
+
+        proximaRevisao: calcularProximaRevisao(novosAcertosConsecutivos),
+      },
+    });
+
+    return flashcardAtualizado;
   },
 };

@@ -91,4 +91,27 @@ export default {
 
     return res.sendStatus(204);
   },
+
+  revisar: async (req: Request, res: Response) => {
+    if (!req.user) {
+      throw new HttpError(401, "Usuário não autenticado.");
+    }
+
+    const usuarioId = req.user.id;
+
+    const flashcardId = Number(req.params.id);
+
+    const { resultado } = req.body;
+
+    const flashcard = await flashcardService.revisar(
+      usuarioId,
+      flashcardId,
+      resultado,
+    );
+
+    return res.status(200).json({
+      mensagem: "Revisão registrada com sucesso.",
+      flashcard,
+    });
+  },
 };
