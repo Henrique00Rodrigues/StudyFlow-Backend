@@ -27,6 +27,15 @@ export default {
       throw new HttpError(409, "Este email já está cadastrado.");
     }
 
+    const quantidadeUsuarios = await prisma.usuario.count();
+
+    if (quantidadeUsuarios >= 10) {
+      throw new HttpError(
+        409,
+        "O limite máximo de 10 usuários cadastrados foi atingido.",
+      );
+    }
+
     const senhaHash = await argon2.hash(senha, {
       type: argon2.argon2id,
     });
