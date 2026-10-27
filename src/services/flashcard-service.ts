@@ -1,5 +1,6 @@
 import { prisma } from "../database/index.js";
 import { HttpError } from "../errors/HttpError.js";
+import { atividadeDiariaService } from "./atividade-diaria-service.js";
 
 type CriarFlashcard = {
   frente: string;
@@ -39,6 +40,20 @@ function calcularProximaRevisao(acertosConsecutivos: number) {
   }
 
   return new Date(Date.now() + segundos * 1000);
+}
+
+function FlashcardRevisadoHoje(dataUltimaRevisao: Date | null) {
+  if (!dataUltimaRevisao) {
+    return false;
+  }
+
+  const hoje = new Date();
+
+  return (
+    dataUltimaRevisao.getFullYear() === hoje.getFullYear() &&
+    dataUltimaRevisao.getMonth() === hoje.getMonth() &&
+    dataUltimaRevisao.getDate() === hoje.getDate()
+  );
 }
 
 export default {
@@ -141,6 +156,8 @@ export default {
       },
     });
 
+    await atividadeDiariaService.registrarFlashcardCriado(usuarioId);
+
     return flashcard;
   },
 
@@ -201,6 +218,11 @@ export default {
         id: flashcardId,
       },
     });
+
+    await atividadeDiariaService.registrarFlashcardCriadoExcluido(
+      usuarioId,
+      flashcard.dataCriacao,
+    );
   },
 
   revisar: async (
@@ -226,6 +248,10 @@ export default {
 
     const agora = new Date();
 
+    const jaFoiRevisadoHoje = FlashcardRevisadoHoje(
+      flashcard.dataUltimaRevisao,
+    );
+
     if (resultado === "erro") {
       const flashcardAtualizado = await prisma.flashcard.update({
         where: {
@@ -244,6 +270,10 @@ export default {
           proximaRevisao: agora,
         },
       });
+
+      if (!jaFoiRevisadoHoje) {
+        await atividadeDiariaService.registrarFlashcardRevisado(usuarioId);
+      }
 
       return flashcardAtualizado;
     }
@@ -267,6 +297,10 @@ export default {
         proximaRevisao: calcularProximaRevisao(novosAcertosConsecutivos),
       },
     });
+
+    if (!jaFoiRevisadoHoje) {
+      await atividadeDiariaService.registrarFlashcardRevisado(usuarioId);
+    }
 
     return flashcardAtualizado;
   },

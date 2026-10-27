@@ -33,6 +33,8 @@ model Usuario {
   fotoPerfilUrl String? @db.Text
 
   materias  Materia[]
+
+  atividadesDiarias AtividadeDiaria[]
 }
 
 model Materia {
@@ -76,4 +78,17 @@ model Flashcard {
   materiaId            Int
 
   materia              Materia   @relation(fields: [materiaId], references: [id], onDelete: Cascade)
+}
+
+model AtividadeDiaria {
+  id                         Int      @id @default(autoincrement())
+  data                       DateTime @db.Date
+  flashcardsRevisados        Int      @default(0)
+  flashcardsCriados          Int      @default(0)
+  flashcardsCriadosExcluidos Int      @default(0)
+
+  usuarioId Int
+  usuario   Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@unique([usuarioId, data])
 }

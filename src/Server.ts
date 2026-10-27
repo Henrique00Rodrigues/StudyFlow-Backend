@@ -4,6 +4,7 @@ import materiaRoutes from "./routes/materiaRoutes.js";
 import tarefaRoutes from "./routes/tarefaRoutes.js";
 import flashcardRoutes from "./routes/flashcardRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import atividadeDiariaRoutes from "./routes/atividadeDiariaRoutes.js";
 
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -28,6 +29,7 @@ server.use("/api/usuarios", autenticarUsuario, usuarioRoutes);
 server.use("/api/materias", autenticarUsuario, materiaRoutes);
 server.use("/api/tarefas", autenticarUsuario, tarefaRoutes);
 server.use("/api/flashcards", autenticarUsuario, flashcardRoutes);
+server.use("/api/atividades", autenticarUsuario, atividadeDiariaRoutes);
 server.use("/api/auth", authRoutes);
 
 server.use(erroHandlerMiddleware);
