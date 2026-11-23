@@ -1,9 +1,10 @@
 import { prisma } from "../database/index.js";
 import { HttpError } from "../errors/HttpError.js";
+import fs from "fs/promises";
+import path from "path";
 
 type AtualizarUsuarioData = {
   apelido?: string;
-  fotoPerfilUrl?: string | null;
 };
 
 export default {
@@ -50,10 +51,6 @@ export default {
         ...(dados.apelido !== undefined && {
           apelido: dados.apelido,
         }),
-
-        ...(dados.fotoPerfilUrl !== undefined && {
-          fotoPerfilUrl: dados.fotoPerfilUrl,
-        }),
       },
 
       select: {
@@ -92,5 +89,71 @@ export default {
         id: usuarioId,
       },
     });
+
+    if (
+      usuarioExistente.fotoPerfilUrl &&
+      usuarioExistente.fotoPerfilUrl.startsWith("/uploads/fotos-perfil/")
+    ) {
+      const caminhoFotoPerfil = path.join(
+        process.cwd(),
+        usuarioExistente.fotoPerfilUrl.replace(/^\/+/, ""),
+      );
+
+      try {
+        await fs.unlink(caminhoFotoPerfil);
+      } catch (error) {
+        console.error("Erro ao excluir foto de perfil:", error);
+      }
+    }
+  },
+
+  atualizarFotoPerfil: async (usuarioId: number, fotoPerfilUrl: string) => {
+    const usuarioExistente = await prisma.usuario.findUnique({
+      where: {
+        id: usuarioId,
+      },
+      select: {
+        fotoPerfilUrl: true,
+      },
+    });
+
+    if (!usuarioExistente) {
+      throw new HttpError(404, "Usuário não encontrado.");
+    }
+
+    const usuario = await prisma.usuario.update({
+      where: {
+        id: usuarioId,
+      },
+      data: {
+        fotoPerfilUrl,
+      },
+      select: {
+        id: true,
+        apelido: true,
+        email: true,
+        tipo: true,
+        dataCriacao: true,
+        fotoPerfilUrl: true,
+      },
+    });
+
+    if (
+      usuarioExistente.fotoPerfilUrl &&
+      usuarioExistente.fotoPerfilUrl.startsWith("/uploads/fotos-perfil/")
+    ) {
+      const caminhoFotoAntiga = path.join(
+        process.cwd(),
+        usuarioExistente.fotoPerfilUrl.replace(/^\/+/, ""),
+      );
+
+      try {
+        await fs.unlink(caminhoFotoAntiga);
+      } catch (error) {
+        console.error("Erro ao excluir foto de perfil antiga:", error);
+      }
+    }
+
+    return usuario;
   },
 };

@@ -25,6 +25,8 @@ server.use(cookieParser());
 
 server.use(express.json());
 
+server.use("/uploads", express.static("uploads"));
+
 server.use("/api/usuarios", autenticarUsuario, usuarioRoutes);
 server.use("/api/materias", autenticarUsuario, materiaRoutes);
 server.use("/api/tarefas", autenticarUsuario, tarefaRoutes);
